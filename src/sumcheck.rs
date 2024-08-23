@@ -9,10 +9,6 @@ pub struct SumcheckProof<F: PrimeField> {
 }
 
 fn prove<F: PrimeField>(poly: &MultiLinearPolynomial<F>, sum: F) -> SumcheckProof<F> {
-    // for each variable
-    //  generate round poly
-    //  get challenge
-    //  update poly by partially evaluating at the challenge
     unimplemented!()
 }
 
