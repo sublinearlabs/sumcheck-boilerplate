@@ -69,20 +69,23 @@ fn field_elements_to_bytes<F: PrimeField>(field_elements: &[F]) -> Vec<u8> {
         .concat()
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::polynomial::poly;
-    use ark_bn254::Fr;
     use crate::sumcheck::{prove, verify};
+    use ark_bn254::Fr;
 
     #[test]
     fn test_sumcheck() {
         // p(a, b, c) = 2ab + 3bc
-        let poly = poly(3, vec![
-            (Fr::from(2), vec![true, true, false]),
-            (Fr::from(3), vec![false, true, true])
-        ]).unwrap();
+        let poly = poly(
+            3,
+            vec![
+                (Fr::from(2), vec![true, true, false]),
+                (Fr::from(3), vec![false, true, true]),
+            ],
+        )
+        .unwrap();
 
         let proof = prove(&poly, Fr::from(10));
         let verification_result = verify(&poly, &proof).unwrap();
