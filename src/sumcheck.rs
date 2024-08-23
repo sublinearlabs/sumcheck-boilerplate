@@ -71,7 +71,7 @@ fn field_elements_to_bytes<F: PrimeField>(field_elements: &[F]) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use crate::polynomial::poly;
+    use crate::polynomial::{poly, skip_one_and_sum_over_boolean_hypercube};
     use crate::sumcheck::{prove, verify};
     use ark_bn254::Fr;
 
