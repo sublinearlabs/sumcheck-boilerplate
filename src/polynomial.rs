@@ -15,18 +15,9 @@ pub fn poly<F: PrimeField>(
 pub fn skip_one_and_sum_over_boolean_hypercube<F: PrimeField>(
     poly: &MultiLinearPolynomial<F>,
 ) -> Vec<F> {
-    let f_0 = poly
-        .partial_evaluate(0, &[F::ZERO])
-        .unwrap()
-        .evaluation_slice()
-        .iter()
-        .sum();
-    let f_1 = poly
-        .partial_evaluate(0, &[F::ONE])
-        .unwrap()
-        .evaluation_slice()
-        .iter()
-        .sum();
-
+    let evaluations = poly.evaluation_slice();
+    let (left_half, right_half) = evaluations.split_at(evaluations.len() / 2);
+    let f_0 = left_half.iter().sum();
+    let f_1 = right_half.iter().sum();
     vec![f_0, f_1]
 }
