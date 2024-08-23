@@ -11,6 +11,7 @@ impl Transcript {
             hasher: Keccak256::new(),
         }
     }
+
     pub fn append(&mut self, new_data: &[u8]) {
         self.hasher.update(new_data);
     }
