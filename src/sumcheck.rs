@@ -10,21 +10,18 @@ pub struct SumcheckProof<F: PrimeField> {
 }
 
 pub fn prove<F: PrimeField>(poly: &MultiLinearPolynomial<F>, sum: F) -> SumcheckProof<F> {
-    
     // Initialize your transcript
 
     // Add the polynomial to the transcript
 
     // Add the claimed sum to the transcript
 
-
     // Implement the sumcheck rounds
-    // - Generate the univariate polynomial for the round 
+    // - Generate the univariate polynomial for the round
     //   by skipping the required variable and summing the rest over the boolean hypercube
     // - Add the round polynomial to the transcript
     // - Sample your challenge
     // - Partially evaluate the polynomial at the challenge
-
 
     // Return a Sumcheck Proof
     unimplemented!()
@@ -46,7 +43,7 @@ pub fn verify<F: PrimeField>(
 
     // add the public inputs to the transcript
     transcript.append(poly.to_bytes().as_slice());
-    transcript.append(proof.sum.into_bigint().to_bytes_be().as_slice());
+    transcript.append(field_element_to_bytes(proof.sum).as_slice());
 
     for round_poly in &proof.round_polys {
         // append the round poly to the transcript
@@ -73,6 +70,10 @@ pub fn verify<F: PrimeField>(
     Ok(initial_poly_eval_at_challenge == claimed_sum)
 }
 
+/// Convert a single field element to bytes
+fn field_element_to_bytes<F: PrimeField>(field_element: F) -> Vec<u8> {
+    field_element.into_bigint().to_bytes_be()
+}
 
 #[cfg(test)]
 mod tests {
