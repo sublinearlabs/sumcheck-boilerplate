@@ -5,15 +5,32 @@ use polynomial::Polynomial;
 use transcript::Transcript;
 
 pub struct SumcheckProof<F: PrimeField> {
-    sum: F,
-    round_polys: Vec<UnivariatePolynomial<F>>,
+    pub sum: F,
+    pub round_polys: Vec<UnivariatePolynomial<F>>,
 }
 
-fn prove<F: PrimeField>(poly: &MultiLinearPolynomial<F>, sum: F) -> SumcheckProof<F> {
+pub fn prove<F: PrimeField>(poly: &MultiLinearPolynomial<F>, sum: F) -> SumcheckProof<F> {
+    
+    // Initialize your transcript
+
+    // Add the polynomial to the transcript
+
+    // Add the claimed sum to the transcript
+
+
+    // Implement the sumcheck rounds
+    // - Generate the univariate polynomial for the round 
+    //   by skipping the required variable and summing the rest over the boolean hypercube
+    // - Add the round polynomial to the transcript
+    // - Sample your challenge
+    // - Partially evaluate the polynomial at the challenge
+
+
+    // Return a Sumcheck Proof
     unimplemented!()
 }
 
-fn verify<F: PrimeField>(
+pub fn verify<F: PrimeField>(
     poly: &MultiLinearPolynomial<F>,
     proof: &SumcheckProof<F>,
 ) -> Result<bool, &'static str> {
@@ -56,18 +73,10 @@ fn verify<F: PrimeField>(
     Ok(initial_poly_eval_at_challenge == claimed_sum)
 }
 
-/// Helper method for converting field elements to bytes
-fn field_elements_to_bytes<F: PrimeField>(field_elements: &[F]) -> Vec<u8> {
-    field_elements
-        .iter()
-        .map(|elem| elem.into_bigint().to_bytes_be())
-        .collect::<Vec<Vec<u8>>>()
-        .concat()
-}
 
 #[cfg(test)]
 mod tests {
-    use crate::polynomial::{poly, skip_one_and_sum_over_boolean_hypercube};
+    use crate::polynomial::poly;
     use crate::sumcheck::{prove, verify};
     use ark_bn254::Fr;
 

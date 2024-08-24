@@ -1,2 +1,2 @@
-mod polynomial;
-mod sumcheck;
+pub mod polynomial;
+pub mod sumcheck;
