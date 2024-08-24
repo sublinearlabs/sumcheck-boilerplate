@@ -1,11 +1,12 @@
 use ark_ff::{BigInteger, PrimeField};
 use polynomial::multilinear::evaluation_form::MultiLinearPolynomial;
 use polynomial::univariate_poly::UnivariatePolynomial;
+use polynomial::Polynomial;
 use transcript::Transcript;
 
 pub struct SumcheckProof<F: PrimeField> {
     sum: F,
-    round_polys: Vec<Vec<F>>,
+    round_polys: Vec<UnivariatePolynomial<F>>,
 }
 
 fn prove<F: PrimeField>(poly: &MultiLinearPolynomial<F>, sum: F) -> SumcheckProof<F> {
@@ -32,12 +33,11 @@ fn verify<F: PrimeField>(
 
     for round_poly in &proof.round_polys {
         // append the round poly to the transcript
-        transcript.append(field_elements_to_bytes(round_poly.as_slice()).as_slice());
-        let round_poly_as_univariate = UnivariatePolynomial::interpolate(round_poly.clone());
+        transcript.append(round_poly.to_bytes().as_slice());
 
         // assert that p(0) + p(1) = sum
-        let p_0 = round_poly_as_univariate.evaluate(&F::ZERO);
-        let p_1 = round_poly_as_univariate.evaluate(&F::ONE);
+        let p_0 = round_poly.evaluate(&F::ZERO);
+        let p_1 = round_poly.evaluate(&F::ONE);
 
         if claimed_sum != (p_0 + p_1) {
             return Err("verifier check failed: claimed_sum != p(0) + p(1)");
@@ -45,7 +45,7 @@ fn verify<F: PrimeField>(
 
         // sample challenge and update the claimed sum for next round
         let challenge = transcript.sample_field_element::<F>();
-        claimed_sum = round_poly_as_univariate.evaluate(&challenge);
+        claimed_sum = round_poly.evaluate(&challenge);
         challenges.push(challenge);
     }
 

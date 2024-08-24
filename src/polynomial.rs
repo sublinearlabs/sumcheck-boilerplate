@@ -1,6 +1,7 @@
 use ark_ff::PrimeField;
 use polynomial::multilinear::coefficient_form::CoeffMultilinearPolynomial;
 use polynomial::multilinear::evaluation_form::MultiLinearPolynomial;
+use polynomial::univariate_poly::UnivariatePolynomial;
 
 /// Create a new polynomial, using coefficient form for inputs but evaluation form for processing
 pub fn poly<F: PrimeField>(
@@ -14,10 +15,10 @@ pub fn poly<F: PrimeField>(
 /// Generate the univariate polynomial by summing over the boolean hypercube
 pub fn skip_one_and_sum_over_boolean_hypercube<F: PrimeField>(
     poly: &MultiLinearPolynomial<F>,
-) -> Vec<F> {
+) -> UnivariatePolynomial<F> {
     let evaluations = poly.evaluation_slice();
     let (left_half, right_half) = evaluations.split_at(evaluations.len() / 2);
     let f_0 = left_half.iter().sum();
     let f_1 = right_half.iter().sum();
-    vec![f_0, f_1]
+    UnivariatePolynomial::interpolate(vec![f_0, f_1])
 }
