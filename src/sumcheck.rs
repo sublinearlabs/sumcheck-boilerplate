@@ -29,7 +29,7 @@ fn verify<F: PrimeField>(
 
     // add the public inputs to the transcript
     transcript.append(poly.to_bytes().as_slice());
-    transcript.append(proof.sum.into_bigint().to_bytes_be().as_slice());
+    transcript.append(field_element_to_bytes(proof.sum).as_slice());
 
     for round_poly in &proof.round_polys {
         // append the round poly to the transcript
@@ -54,6 +54,11 @@ fn verify<F: PrimeField>(
         .evaluate(&challenges)
         .map_err(|_| "could not evaluate initial poly")?;
     Ok(initial_poly_eval_at_challenge == claimed_sum)
+}
+
+/// Convert a single field element to bytes
+fn field_element_to_bytes<F: PrimeField>(field_element: F) -> Vec<u8> {
+    field_element.into_bigint().to_bytes_be()
 }
 
 /// Helper method for converting field elements to bytes
